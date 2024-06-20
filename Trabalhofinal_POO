@@ -7,42 +7,37 @@
 
 using namespace std;
 
-// Classe base Pessoa
 class Pessoa {
-protected: // Classe Pessoa só pode ser usada nela mesmo e em outra classe que seja herdada dela mesma 
+protected:  
     string nome;
     int idade;
 
 public:
     Pessoa(string nome, int idade) : nome(nome), idade(idade) {} //Construtor 
-    // Método puro virtual abstrata e forçando as classes derivadas a implementar esse método.
     virtual void mostrarIdentificacao() const = 0;
     string getNome() const { return nome; }
     int getIdade() const { return idade; }
 };
 
-// Forward declarations
 class Rota;
 class Passageiro;
 class Onibus;
 
-// Classe Motorista herda de Pessoa
 class Motorista : public Pessoa {
 private:
     int numeroIdentificacao;
-    Rota* rotaAtual; // Relacionamento Associação
+    Rota* rotaAtual;
 
 public:
     Motorista(string nome, int idade, int numero)
-        : Pessoa(nome, idade), numeroIdentificacao(numero), rotaAtual(nullptr) {} //Construtor 
+        : Pessoa(nome, idade), numeroIdentificacao(numero), rotaAtual(nullptr) {} 
 
     void iniciarViagem(Rota* rota);
-    void mostrarIdentificacao() const override {  // Substituição de Métodos
+    void mostrarIdentificacao() const override {  
         cout << "Motorista: " << nome << ", ID: " << numeroIdentificacao << endl;
     }
 };
 
-// Classe Rota
 class Rota {
 private:
     string origem;
@@ -52,15 +47,14 @@ private:
 
 public:
     Rota(string origem, string destino, float distancia)
-        : origem(origem), destino(destino), distanciaKm(distancia), onibusAtribuido(nullptr) {} // Construtor
+        : origem(origem), destino(destino), distanciaKm(distancia), onibusAtribuido(nullptr) {} 
 
     void atribuirOnibus(Onibus* onibus);
     string getOrigem() const { return origem; }
     string getDestino() const { return destino; }
-    float calcularDuracaoViagem() const { return distanciaKm / 60.0; } // Simplificação: velocidade média de 60 km/h
+    float calcularDuracaoViagem() const { return distanciaKm / 60.0; } 
 };
 
-// Classe Bilhete
 class Bilhete {
 private:
     string numeroIdentificacao;
@@ -70,29 +64,27 @@ private:
 
 public:
     Bilhete(string numero, float preco, Rota* rota, Passageiro* passageiro)
-        : numeroIdentificacao(numero), preco(preco), rota(rota), passageiro(passageiro) {} // Construtor
+        : numeroIdentificacao(numero), preco(preco), rota(rota), passageiro(passageiro) {} 
 
     string getNumeroIdentificacao() const { return numeroIdentificacao; }
     void exibirInformacoes() const;
 };
 
-// Classe Passageiro herda de Pessoa
 class Passageiro : public Pessoa {
 private:
     Bilhete* bilhete;
 
 public:
     Passageiro(string nome, int idade)
-        : Pessoa(nome, idade), bilhete(nullptr) {} //Construtor 
+        : Pessoa(nome, idade), bilhete(nullptr) {} 
 
     void comprarBilhete(Bilhete* b);
     void cancelarBilhete();
-    void mostrarIdentificacao() const override { // Substituição de Métodos
+    void mostrarIdentificacao() const override { 
         cout << "Passageiro: " << nome << ", Idade: " << idade << endl;
     }
 };
 
-// Classe Onibus
 class Onibus {
 private:
     string numeroIdentificacao;
@@ -103,7 +95,7 @@ private:
 
 public:
     Onibus(string numero, int capacidade)
-        : numeroIdentificacao(numero), capacidadePassageiros(capacidade), emManutencao(false), rotaAtual(nullptr) {} //Construtor 
+        : numeroIdentificacao(numero), capacidadePassageiros(capacidade), emManutencao(false), rotaAtual(nullptr) {}
 
     void iniciarViagem(Rota* rota);
     void adicionarPassageiro(Passageiro* passageiro);
@@ -111,14 +103,12 @@ public:
     string getNumeroIdentificacao() const { return numeroIdentificacao; }
 };
 
-// Implementação dos métodos
-
-void Onibus::iniciarViagem(Rota* rota) { //métodos com regras de negócio implementadas
+void Onibus::iniciarViagem(Rota* rota) { 
     rotaAtual = rota;
     cout << "Onibus " << numeroIdentificacao << " iniciou viagem na rota de " << rota->getOrigem() << " para " << rota->getDestino() << "." << endl;
 }
 
-void Onibus::adicionarPassageiro(Passageiro* passageiro) { //métodos com regras de negócio implementadas
+void Onibus::adicionarPassageiro(Passageiro* passageiro) { 
     if (passageiros.size() < static_cast<size_t>(capacidadePassageiros)) {
         passageiros.push_back(passageiro);
         cout << "Passageiro " << passageiro->getNome() << " embarcou no onibus " << numeroIdentificacao << "." << endl;
@@ -141,7 +131,7 @@ void Rota::atribuirOnibus(Onibus* onibus) {
     cout << "Onibus " << onibus->getNumeroIdentificacao() << " atribuido a rota de " << origem << " para " << destino << "." << endl;
 }
 
-void Bilhete::exibirInformacoes() const { // Sobrecarga de Métodos
+void Bilhete::exibirInformacoes() const { 
     cout << "Bilhete " << numeroIdentificacao << ": Preco - R$" << preco << ", Rota - " << rota->getOrigem() << " para " << rota->getDestino() << "." << endl;
 }
 
@@ -164,10 +154,7 @@ void Motorista::iniciarViagem(Rota* rota) {
     cout << "Motorista " << nome << " iniciou viagem na rota de " << rota->getOrigem() << " para " << rota->getDestino() << "." << endl;
 }
 
-// Função principal para simulação
 int main() {
-    // Criação dos objetos
-    // instanciação e alocando memória 
     Onibus onibus1("001", 50);
     Onibus onibus2("002", 40);
 
@@ -180,34 +167,24 @@ int main() {
     Passageiro passageiro1("Joao", 30);
     Passageiro passageiro2("Ana", 25);
 
-    // Atribuição de ônibus às rotas
-    // Mensagens entre Objetos
     rotaA.atribuirOnibus(&onibus1);
     rotaB.atribuirOnibus(&onibus2);
 
-    // Motoristas iniciam viagem
     motorista1.iniciarViagem(&rotaA);
     motorista2.iniciarViagem(&rotaB);
 
-    // Criação de bilhetes e compra por passageiros
     Bilhete bilhete1("B001", 150.0, &rotaA, &passageiro1);
     Bilhete bilhete2("B002", 200.0, &rotaB, &passageiro2);
 
     passageiro1.comprarBilhete(&bilhete1);
     passageiro2.comprarBilhete(&bilhete2);
 
-    // Adicionar passageiros ao ônibus
-    // Problema com Fluxo de Execução
     onibus1.adicionarPassageiro(&passageiro1);
     onibus2.adicionarPassageiro(&passageiro2);
 
-    // Exibição de informações
     bilhete1.exibirInformacoes();
     bilhete2.exibirInformacoes();
 
-    // Exemplo de polimorfismo
-    // Exemplifica polimorfismo em C++, utilizando um array de ponteiros para objetos Pessoa para chamar o método 
-    // mostrarIdentificacao() de suas classes derivadas.
     Pessoa* pessoas[] = { &motorista1, &motorista2, &passageiro1, &passageiro2 };
     for (Pessoa* p : pessoas) {
         p->mostrarIdentificacao();
